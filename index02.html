@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Management - Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; font-family: "Segoe UI", Tahoma, sans-serif; }
+    .card { border-radius: 14px; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .btn-whatsapp { background-color: #25D366; color: white; }
+    .btn-email { background-color: #0d6efd; color: white; }
+    .btn { border-radius: 8px; }
+    .badge { font-size: 0.8rem; }
+    .table-responsive { border-radius: 10px; overflow-x: auto; }
+    @media (max-width: 768px) {
+      h4 { font-size: 1rem; }
+      .btn { font-size: 0.8rem; }
+      .form-control, .form-select { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">🎓 Admin Dashboard</h2>
+    <p class="text-muted">Manage Teachers, Students, and Parents — Linked with Attendance, Payment, Term & Agenda</p>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ul class="nav nav-tabs justify-content-center flex-wrap">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#teachers">Teachers</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#students">Students</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#parents">Parents</button></li>
+  </ul>
+
+  <div class="tab-content mt-4">
+
+    <!-- ===== TEACHERS ===== -->
+    <div class="tab-pane fade show active" id="teachers">
+      <div class="card p-3">
+        <h4 class="text-primary mb-3">Manage Teachers</h4>
+        <form id="teacherForm" class="row g-2">
+          <div class="col-md-3"><input type="text" id="tName" class="form-control" placeholder="Name" required></div>
+          <div class="col-md-3"><input type="text" id="tPhone" class="form-control" placeholder="Phone" required></div>
+          <div class="col-md-3"><input type="email" id="tEmail" class="form-control" placeholder="Email" required></div>
+          <div class="col-md-3"><input type="text" id="tSubject" class="form-control" placeholder="Subject" required></div>
+          <div class="col-12"><button class="btn btn-primary w-100 mt-2">Add Teacher</button></div>
+        </form>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-striped align-middle text-center">
+            <thead class="table-primary">
+              <tr>
+                <th>Name</th><th>Phone</th><th>Email</th><th>Subject</th>
+                <th>Attendance</th><th>Payment</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="teacherTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STUDENTS ===== -->
+    <div class="tab-pane fade" id="students">
+      <div class="card p-3">
+        <h4 class="text-success mb-3">Manage Students</h4>
+        <form id="studentForm" class="row g-2">
+          <div class="col-md-3"><input type="text" id="sName" class="form-control" placeholder="Student Name" required></div>
+          <div class="col-md-2">
+            <select id="sGender" class="form-select" required>
+              <option value="">Gender</option><option>Male</option><option>Female</option>
+            </select>
+          </div>
+          <div class="col-md-2"><input type="text" id="sClass" class="form-control" placeholder="Class" required></div>
+          <div class="col-md-2">
+            <select id="sTerm" class="form-select" required>
+              <option value="">Term</option><option>First Term</option><option>Second Term</option><option>Third Term</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <textarea id="sAgenda" class="form-control" placeholder="Agenda / Notes"></textarea>
+          </div>
+          <div class="col-md-3">
+            <select id="sTeacher" class="form-select"><option value="">Assign Teacher</option></select>
+          </div>
+          <div class="col-md-3">
+            <select id="sParent" class="form-select"><option value="">Assign Parent</option></select>
+          </div>
+          <div class="col-12"><button class="btn btn-success w-100 mt-2">Add Student</button></div>
+        </form>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-striped align-middle text-center">
+            <thead class="table-success">
+              <tr>
+                <th>Name</th><th>Gender</th><th>Class</th><th>Term</th><th>Agenda</th>
+                <th>Teacher</th><th>Parent</th><th>Attendance</th><th>Payment</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="studentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PARENTS ===== -->
+    <div class="tab-pane fade" id="parents">
+      <div class="card p-3">
+        <h4 class="text-info mb-3">Manage Parents</h4>
+        <form id="parentForm" class="row g-2">
+          <div class="col-md-3"><input type="text" id="pName" class="form-control" placeholder="Parent Name" required></div>
+          <div class="col-md-3"><input type="text" id="pPhone" class="form-control" placeholder="Phone" required></div>
+          <div class="col-md-3"><input type="email" id="pEmail" class="form-control" placeholder="Email" required></div>
+          <div class="col-md-3">
+            <select id="pChild" class="form-select"><option value="">Link Student</option></select>
+          </div>
+          <div class="col-12"><button class="btn btn-info w-100 mt-2">Add Parent</button></div>
+        </form>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-striped align-middle text-center">
+            <thead class="table-info">
+              <tr><th>Parent</th><th>Phone</th><th>Email</th><th>Student</th><th>Action</th></tr>
+            </thead>
+            <tbody id="parentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getData() {
+  return JSON.parse(localStorage.getItem("schoolData")) || { teachers: [], students: [], parents: [] };
+}
+function saveData(data) { localStorage.setItem("schoolData", JSON.stringify(data)); }
+
+let schoolData = getData();
+
+/* ============ TEACHERS ============ */
+function renderTeachers() {
+  teacherTable.innerHTML = schoolData.teachers.map((t, i) => `
+    <tr>
+      <td>${t.name}</td>
+      <td>${t.phone}</td>
+      <td>${t.email}</td>
+      <td>${t.subject}</td>
+      <td>
+        <span class="badge ${t.attendance === 'Present' ? 'bg-success' : 'bg-secondary'}">${t.attendance || 'Absent'}</span><br>
+        <button class="btn btn-sm btn-outline-success mt-1" onclick="toggleAttendance('teacher', ${i})">Toggle</button>
+      </td>
+      <td>
+        <span class="badge ${t.payment === 'Paid' ? 'bg-success' : 'bg-danger'}">${t.payment || 'Unpaid'}</span><br>
+        <button class="btn btn-sm btn-outline-primary mt-1" onclick="togglePayment('teacher', ${i})">Toggle</button>
+      </td>
+      <td>
+        <a href="https://wa.me/${t.phone}" class="btn btn-sm btn-whatsapp mb-1" target="_blank">WA</a>
+        <a href="mailto:${t.email}" class="btn btn-sm btn-email mb-1" target="_blank">Email</a>
+        <button onclick="deleteTeacher(${i})" class="btn btn-sm btn-danger">Delete</button>
+      </td>
+    </tr>`).join('');
+  updateTeacherDropdown();
+}
+
+teacherForm.addEventListener('submit', e => {
+  e.preventDefault();
+  schoolData.teachers.push({
+    id: Date.now(), name: tName.value, phone: tPhone.value,
+    email: tEmail.value, subject: tSubject.value,
+    attendance: "Absent", payment: "Unpaid"
+  });
+  saveData(schoolData); teacherForm.reset(); renderTeachers();
+});
+function deleteTeacher(i){ schoolData.teachers.splice(i,1); saveData(schoolData); renderTeachers(); }
+
+/* ============ STUDENTS ============ */
+function renderStudents() {
+  studentTable.innerHTML = schoolData.students.map((s, i) => {
+    const teacher = schoolData.teachers.find(t => t.id == s.teacherId);
+    const parent = schoolData.parents.find(p => p.id == s.parentId);
+    return `<tr>
+      <td>${s.name}</td>
+      <td>${s.gender}</td>
+      <td>${s.className}</td>
+      <td>${s.term}</td>
+      <td>${s.agenda || '-'}</td>
+      <td>${teacher ? teacher.name : 'N/A'}</td>
+      <td>${parent ? parent.name : 'N/A'}</td>
+      <td>
+        <span class="badge ${s.attendance === 'Present' ? 'bg-success' : 'bg-secondary'}">${s.attendance || 'Absent'}</span><br>
+        <button class="btn btn-sm btn-outline-success mt-1" onclick="toggleAttendance('student', ${i})">Toggle</button>
+      </td>
+      <td>
+        <span class="badge ${s.payment === 'Paid' ? 'bg-success' : 'bg-danger'}">${s.payment || 'Unpaid'}</span><br>
+        <button class="btn btn-sm btn-outline-primary mt-1" onclick="togglePayment('student', ${i})">Toggle</button>
+      </td>
+      <td><button onclick="deleteStudent(${i})" class="btn btn-danger btn-sm">Delete</button></td>
+    </tr>`;
+  }).join('');
+  updateStudentDropdown();
+}
+
+studentForm.addEventListener('submit', e => {
+  e.preventDefault();
+  schoolData.students.push({
+    id: Date.now(), name: sName.value, gender: sGender.value,
+    className: sClass.value, term: sTerm.value, agenda: sAgenda.value,
+    teacherId: sTeacher.value || null, parentId: sParent.value || null,
+    attendance: "Absent", payment: "Unpaid"
+  });
+  saveData(schoolData); studentForm.reset(); renderStudents();
+});
+function deleteStudent(i){ schoolData.students.splice(i,1); saveData(schoolData); renderStudents(); }
+
+/* ============ PARENTS ============ */
+function renderParents() {
+  parentTable.innerHTML = schoolData.parents.map((p, i) => {
+    const child = schoolData.students.find(s => s.id == p.studentId);
+    return `<tr>
+      <td>${p.name}</td><td>${p.phone}</td><td>${p.email}</td>
+      <td>${child ? child.name : 'N/A'}</td>
+      <td>
+        <a href="https://wa.me/${p.phone}" class="btn btn-sm btn-whatsapp mb-1" target="_blank">WA</a>
+        <a href="mailto:${p.email}" class="btn btn-sm btn-email mb-1" target="_blank">Email</a>
+        <button onclick="deleteParent(${i})" class="btn btn-danger btn-sm">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+  updateParentDropdown();
+}
+
+parentForm.addEventListener('submit', e => {
+  e.preventDefault();
+  schoolData.parents.push({
+    id: Date.now(), name: pName.value, phone: pPhone.value,
+    email: pEmail.value, studentId: pChild.value || null
+  });
+  saveData(schoolData); parentForm.reset(); renderParents();
+});
+function deleteParent(i){ schoolData.parents.splice(i,1); saveData(schoolData); renderParents(); }
+
+/* ====== DROPDOWNS ====== */
+function updateTeacherDropdown() {
+  sTeacher.innerHTML = `<option value="">Assign Teacher</option>` + schoolData.teachers.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+}
+function updateParentDropdown() {
+  sParent.innerHTML = `<option value="">Assign Parent</option>` + schoolData.parents.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+}
+function updateStudentDropdown() {
+  pChild.innerHTML = `<option value="">Link Student</option>` + schoolData.students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+/* ====== TOGGLES ====== */
+function toggleAttendance(type, i){
+  const arr = type === 'teacher' ? schoolData.teachers : schoolData.students;
+  arr[i].attendance = arr[i].attendance === 'Present' ? 'Absent' : 'Present';
+  saveData(schoolData); renderTeachers(); renderStudents();
+}
+function togglePayment(type, i){
+  const arr = type === 'teacher' ? schoolData.teachers : schoolData.students;
+  arr[i].payment = arr[i].payment === 'Paid' ? 'Unpaid' : 'Paid';
+  saveData(schoolData); renderTeachers(); renderStudents();
+}
+
+/* INIT */
+renderTeachers(); renderStudents(); renderParents();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

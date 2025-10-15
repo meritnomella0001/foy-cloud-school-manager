@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FOY International College — School Management</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --sidebar-width: 260px;
+      --accent: #0d6efd;
+      --muted: #6c757d;
+    }
+
+    html,body{height:100%;}
+    body{
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#f8fafc,#f3f6fb 60%);
+      color:#222;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      gap: 1.5rem;
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: #fff;
+      border-right: 1px solid rgba(15,23,42,0.05);
+      padding: 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .main { padding: 1.5rem; }
+
+    .brand { font-weight:700; color:var(--accent); font-size:1.15rem; }
+    .nav-link { color: #374151; }
+    .nav-link.active { background: rgba(13,110,253,0.08); color:var(--accent); border-radius:8px; }
+
+    .card { border-radius:12px; box-shadow:0 6px 18px rgba(15,23,42,0.04); border:none; }
+    .btn-whatsapp{ background:#25D366; color:#fff; }
+    .btn-email{ background:var(--accent); color:#fff; }
+
+    .table thead th { position: sticky; top: 0; z-index: 1; background: #fff; }
+    .table-responsive-xl { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px; }
+    .small-muted { font-size:0.85rem; color:var(--muted); }
+
+    @media (max-width: 992px){
+      .app{ grid-template-columns: 1fr; }
+      .sidebar{ position:relative; height:auto; border-right:none; border-bottom:1px solid rgba(15,23,42,0.03); }
+    }
+
+    .badge-status { min-width:72px; display:inline-block; }
+    .action-row .btn { margin-right:6px; margin-bottom:6px; }
+    .search-input { max-width:420px; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="d-flex align-items-center mb-4">
+      <div class="me-2">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v7c0 5 4 9 10 9s10-4 10-9V7l-10-5z" fill="#0d6efd" opacity=".12"/><path d="M12 2l10 5v7c0 5-4 9-10 9S2 19 2 14V7l10-5z" fill="#0d6efd"/></svg>
+      </div>
+      <div>
+        <div class="brand">FOY INTERNATIONAL COLLEGE</div>
+        <div class="small-muted">School Management Dashboard</div>
+      </div>
+    </div>
+
+    <nav class="nav flex-column mb-3">
+      <a class="nav-link active" data-tab="teachers" href="#" onclick="showTab('teachers')">👩‍🏫 Teachers</a>
+      <a class="nav-link" data-tab="students" href="#" onclick="showTab('students')">👨‍🎓 Students</a>
+      <a class="nav-link" data-tab="parents" href="#" onclick="showTab('parents')">👪 Parents</a>
+      <a class="nav-link" data-tab="reports" href="#" onclick="showTab('reports')">📊 Reports</a>
+    </nav>
+
+    <hr>
+
+    <div class="mt-auto small-muted">
+      <div>© <strong>FOY INTERNATIONAL COLLEGE</strong></div>
+      <div>Admin Management System</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h3 class="mb-0">School Administration</h3>
+        <div class="small-muted">Manage teachers, students, parents, attendance & payments</div>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <input id="globalSearch" class="form-control form-control-sm me-2 search-input" placeholder="Search by name / class / email" oninput="renderAll()" />
+        <button class="btn btn-outline-secondary btn-sm me-2" onclick="renderAll()">Search</button>
+      </div>
+    </div>
+
+    <section id="tab-content">
+
+      <!-- TEACHERS TAB -->
+      <div id="teachers" class="tab-panel">
+        <div class="row g-3">
+          <div class="col-12 col-xl-4">
+            <div class="card p-3">
+              <h5 class="mb-2">Add Teacher</h5>
+              <form id="teacherForm" onsubmit="addTeacher(event)">
+                <div class="row g-2">
+                  <div class="col-12"><input id="tName" class="form-control" placeholder="Full name" required></div>
+                  <div class="col-6"><input id="tAge" type="number" min="18" class="form-control" placeholder="Age"></div>
+                  <div class="col-6"><input id="tPhone" class="form-control" placeholder="Phone (e.g. 234801...)" required></div>
+                  <div class="col-6"><input id="tEmail" class="form-control" placeholder="Email" required></div>
+                  <div class="col-6"><input id="tSubject" class="form-control" placeholder="Subject / Department"></div>
+                  <div class="col-12 text-end">
+                    <button class="btn btn-primary mt-2" type="submit">Add Teacher</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-8">
+            <div class="card p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Teachers</h5>
+                <div class="small-muted">Total: <span id="countTeachers">0</span></div>
+              </div>
+              <div class="table-responsive-xl">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Name</th><th>Phone</th><th>Email</th><th>Subject</th><th>Age</th>
+                      <th class="text-center">Attendance</th><th class="text-center">Payment</th><th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="teacherTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENTS TAB -->
+      <div id="students" class="tab-panel" style="display:none;">
+        <div class="row g-3">
+          <div class="col-12 col-xl-5">
+            <div class="card p-3">
+              <h5 class="mb-2">Add Student</h5>
+              <form id="studentForm" onsubmit="addStudent(event)">
+                <div class="row g-2">
+                  <div class="col-12"><input id="sName" class="form-control" placeholder="Full name" required></div>
+                  <div class="col-6"><select id="sGender" class="form-select" required><option value="">Gender</option><option>Male</option><option>Female</option></select></div>
+                  <div class="col-6"><input id="sClass" class="form-control" placeholder="Class (e.g. JS1)" required></div>
+                  <div class="col-6"><input id="sAge" type="number" min="3" class="form-control" placeholder="Age"></div>
+                  <div class="col-6"><select id="sTerm" class="form-select" required><option value="">Term</option><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div>
+                  <div class="col-6"><select id="sTeacher" class="form-select"><option value="">Assign Teacher</option></select></div>
+                  <div class="col-6"><input id="sParentName" class="form-control" placeholder="Parent name"></div>
+                  <div class="col-12"><textarea id="sAgenda" class="form-control" rows="2" placeholder="Agenda / notes (optional)"></textarea></div>
+                  <div class="col-12 text-end"><button class="btn btn-success mt-2" type="submit">Add Student</button></div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-7">
+            <div class="card p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Students</h5>
+                <div class="small-muted">Total: <span id="countStudents">0</span></div>
+              </div>
+              <div class="table-responsive-xl">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Name</th><th>Gender</th><th>Class</th><th>Term</th><th>Age</th>
+                      <th>Teacher</th><th>Parent</th><th class="text-center">Attendance</th><th class="text-center">Payment</th><th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="studentTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARENTS TAB -->
+      <div id="parents" class="tab-panel" style="display:none;">
+        <div class="row g-3">
+          <div class="col-12 col-xl-4">
+            <div class="card p-3">
+              <h5 class="mb-2">Add Parent</h5>
+              <form id="parentForm" onsubmit="addParent(event)">
+                <div class="row g-2">
+                  <div class="col-12"><input id="pName" class="form-control" placeholder="Full name" required></div>
+                  <div class="col-6"><input id="pPhone" class="form-control" placeholder="Phone" required></div>
+                  <div class="col-6"><input id="pEmail" class="form-control" placeholder="Email" required></div>
+                  <div class="col-6"><input id="pAge" type="number" min="18" class="form-control" placeholder="Age"></div>
+                  <div class="col-6"><input id="pStudentName" class="form-control" placeholder="Linked Student"></div>
+                  <div class="col-12 text-end"><button class="btn btn-info mt-2" type="submit">Add Parent</button></div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-8">
+            <div class="card p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Parents</h5>
+                <div class="small-muted">Total: <span id="countParents">0</span></div>
+              </div>
+              <div class="table-responsive-xl">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr><th>Name</th><th>Phone</th><th>Email</th><th>Age</th><th>Student</th><th class="text-center">Actions</th></tr>
+                  </thead>
+                  <tbody id="parentTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS TAB -->
+      <div id="reports" class="tab-panel" style="display:none;">
+        <div class="card p-3">
+          <h5>Quick Reports</h5>
+          <div class="row g-3 mt-2">
+            <div class="col-12 col-md-4"><div class="card p-3"><div class="small-muted">Teachers Present</div><div class="h4" id="reportTeachersPresent">0</div></div></div>
+            <div class="col-12 col-md-4"><div class="card p-3"><div class="small-muted">Students Present</div><div class="h4" id="reportStudentsPresent">0</div></div></div>
+            <div class="col-12 col-md-4"><div class="card p-3"><div class="small-muted">Unpaid (All)</div><div class="h4" id="reportUnpaidCount">0</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- Supabase + Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Your Supabase logic -->
+<script>
+  // ✅ SUPABASE CONNECTION
+  const SUPABASE_URL = "https://pjedtymwfyjmzluejygs.supabase.co"; // ← replace with yours
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZWR0eW13ZnlqbXpsdWVqeWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0NjE4OTYsImV4cCI6MjA3NjAzNzg5Nn0.g7p_nlemO1ZvpGMPwutsnr2SmlE4jVZw-VCGsbQK530";               // ← replace with yours
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // --- STATE ---
+  let teachers = [];
+  let students = [];
+  let parents = [];
+
+  // --- TABS ---
+  function showTab(tabName) {
+    document.querySelectorAll(".tab-panel").forEach(tab => tab.style.display = "none");
+    document.getElementById(tabName).style.display = "block";
+    document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
+  }
+
+  // --- INIT ---
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadTeachers();
+    await loadStudents();
+    await loadParents();
+    renderAll();
+  });
+
+  // --- LOADERS ---
+  async function loadTeachers() {
+    const { data, error } = await supabaseClient.from("teachers").select("*").order("id", { ascending: true });
+    if (error) console.error("Teachers load error:", error);
+    teachers = data || [];
+  }
+
+  async function loadStudents() {
+    const { data, error } = await supabaseClient.from("students").select("*").order("id", { ascending: true });
+    if (error) console.error("Students load error:", error);
+    students = data || [];
+  }
+
+  async function loadParents() {
+    const { data, error } = await supabaseClient.from("parents").select("*").order("id", { ascending: true });
+    if (error) console.error("Parents load error:", error);
+    parents = data || [];
+  }
+
+  // --- ADD FUNCTIONS ---
+  async function addTeacher(e) {
+    e.preventDefault();
+    const t = {
+      name: tName.value.trim(),
+      age: +tAge.value || null,
+      phone: tPhone.value.trim(),
+      email: tEmail.value.trim(),
+      subject: tSubject.value.trim(),
+      attendance: "Present",
+      payment: "Paid"
+    };
+    const { error } = await supabaseClient.from("teachers").insert([t]);
+    if (error) return alert("Error adding teacher: " + error.message);
+    teacherForm.reset();
+    await loadTeachers();
+    renderAll();
+  }
+
+  async function addStudent(e) {
+    e.preventDefault();
+    const s = {
+      name: sName.value.trim(),
+      gender: sGender.value,
+      class: sClass.value.trim(),
+      age: +sAge.value || null,
+      term: sTerm.value,
+      teacher: sTeacher.value,
+      parent: sParentName.value.trim(),
+      agenda: sAgenda.value.trim(),
+      attendance: "Present",
+      payment: "Paid"
+    };
+    const { error } = await supabaseClient.from("students").insert([s]);
+    if (error) return alert("Error adding student: " + error.message);
+    studentForm.reset();
+    await loadStudents();
+    renderAll();
+  }
+
+  async function addParent(e) {
+    e.preventDefault();
+    const p = {
+      name: pName.value.trim(),
+      phone: pPhone.value.trim(),
+      email: pEmail.value.trim(),
+      age: +pAge.value || null,
+      student: pStudentName.value.trim()
+    };
+    const { error } = await supabaseClient.from("parents").insert([p]);
+    if (error) return alert("Error adding parent: " + error.message);
+    parentForm.reset();
+    await loadParents();
+    renderAll();
+  }
+
+  // --- DELETE FUNCTIONS ---
+  async function deleteTeacher(id) {
+    if (!confirm("Delete this teacher?")) return;
+    await supabaseClient.from("teachers").delete().eq("id", id);
+    await loadTeachers();
+    renderAll();
+  }
+
+  async function deleteStudent(id) {
+    if (!confirm("Delete this student?")) return;
+    await supabaseClient.from("students").delete().eq("id", id);
+    await loadStudents();
+    renderAll();
+  }
+
+  async function deleteParent(id) {
+    if (!confirm("Delete this parent?")) return;
+    await supabaseClient.from("parents").delete().eq("id", id);
+    await loadParents();
+    renderAll();
+  }
+
+  // --- RENDER FUNCTIONS ---
+  function renderAll() {
+    renderTeachers();
+    renderStudents();
+    renderParents();
+    updateReports();
+  }
+
+  function renderTeachers() {
+    const table = teacherTable;
+    const search = globalSearch.value.toLowerCase();
+    const filtered = teachers.filter(t =>
+      t.name.toLowerCase().includes(search) ||
+      t.email.toLowerCase().includes(search) ||
+      t.phone.toLowerCase().includes(search)
+    );
+    countTeachers.textContent = filtered.length;
+    sTeacher.innerHTML = `<option value="">Assign Teacher</option>` + teachers.map(t => `<option value="${t.name}">${t.name}</option>`).join("");
+
+    table.innerHTML = filtered.map(t => `
+      <tr>
+        <td>${t.name}</td>
+        <td>${t.phone}</td>
+        <td>${t.email}</td>
+        <td>${t.subject || "-"}</td>
+        <td>${t.age || "-"}</td>
+        <td class="text-center"><span class="badge bg-success badge-status">${t.attendance}</span></td>
+        <td class="text-center"><span class="badge bg-primary badge-status">${t.payment}</span></td>
+        <td class="text-center action-row">
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteTeacher(${t.id})">🗑️</button>
+        </td>
+      </tr>`).join("");
+  }
+
+  function renderStudents() {
+    const table = studentTable;
+    const search = globalSearch.value.toLowerCase();
+    const filtered = students.filter(s =>
+      s.name.toLowerCase().includes(search) ||
+      (s.class && s.class.toLowerCase().includes(search)) ||
+      (s.parent && s.parent.toLowerCase().includes(search))
+    );
+    countStudents.textContent = filtered.length;
+
+    table.innerHTML = filtered.map(s => `
+      <tr>
+        <td>${s.name}</td>
+        <td>${s.gender || "-"}</td>
+        <td>${s.class || "-"}</td>
+        <td>${s.term || "-"}</td>
+        <td>${s.age || "-"}</td>
+        <td>${s.teacher || "-"}</td>
+        <td>${s.parent || "-"}</td>
+        <td class="text-center"><span class="badge bg-success badge-status">${s.attendance}</span></td>
+        <td class="text-center"><span class="badge bg-primary badge-status">${s.payment}</span></td>
+        <td class="text-center action-row">
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteStudent(${s.id})">🗑️</button>
+        </td>
+      </tr>`).join("");
+  }
+
+  function renderParents() {
+    const table = parentTable;
+    const search = globalSearch.value.toLowerCase();
+    const filtered = parents.filter(p =>
+      p.name.toLowerCase().includes(search) ||
+      p.phone.toLowerCase().includes(search) ||
+      p.email.toLowerCase().includes(search)
+    );
+    countParents.textContent = filtered.length;
+
+    table.innerHTML = filtered.map(p => `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.phone}</td>
+        <td>${p.email}</td>
+        <td>${p.age || "-"}</td>
+        <td>${p.student || "-"}</td>
+        <td class="text-center action-row">
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteParent(${p.id})">🗑️</button>
+        </td>
+      </tr>`).join("");
+  }
+
+  // --- REPORTS ---
+  function updateReports() {
+    const teacherPresent = teachers.filter(t => t.attendance === "Present").length;
+    const studentPresent = students.filter(s => s.attendance === "Present").length;
+    const unpaid = [
+      ...teachers.filter(t => t.payment !== "Paid"),
+      ...students.filter(s => s.payment !== "Paid")
+    ].length;
+
+    reportTeachersPresent.textContent = teacherPresent;
+    reportStudentsPresent.textContent = studentPresent;
+    reportUnpaidCount.textContent = unpaid;
+  }
+</script>
+</body>
+</html>
